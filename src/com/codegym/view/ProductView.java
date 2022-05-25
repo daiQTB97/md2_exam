@@ -73,20 +73,38 @@ public class ProductView {
     }
 
     public void showProducts(InputOption inputOption) {
+
         System.out.println("-----------------------------------------DANH SÁCH SẢN PHẨM-------------------------------------------");
-        System.out.printf("%-15s %-30s %-25s %-10s %-20s \n", "Id", "Tên", "Giá", "Số lượng", "Mô tả");
-        for (Product product : productService.findAll()) {
-            System.out.printf("%-15d %-30s %-25s %-10d %-20s\n",
-                    product.getId(),
-                    product.getTitle(),
-                    AppUtils.doubleToVND(product.getPrice()),
-                    product.getQuantity(),
-                    product.getDescription()
-            );
+        System.out.printf("%-15s %-30s %-25s %-10s %-20s\n", "Id", "Tên sản phẩm", "Giá sản phẩm", "Số lượng", "Mô tả");
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        int j = 0;
+        int count = 1;
+        List<Product> productList =   productService.findAll();
+        if (productList.isEmpty()) {
+            System.out.println("Danh sách sản phẩm trống !!!");
+            ProductViewLauncher.run();
+            return;
         }
-        System.out.println("--------------------------------------------------------------------------------------------------\n");
-        if (inputOption == InputOption.SHOW)
-            AppUtils.isRetry(InputOption.SHOW);
+        do {
+            for (int i = j; i < productList.size(); i++) {
+                System.out.printf("%-15d %-30s %-25s %-10d %-20s\n",
+                        productList.get(i).getId(),
+                        productList.get(i).getTitle(),
+                        AppUtils.doubleToVND(productList.get(i).getPrice()),
+                        productList.get(i).getQuantity(),
+                        productList.get(i).getDescription()
+                );
+                j = i;
+                if (count % 5 == 0){
+                    break;
+                }
+                count++;
+            }
+            count++;
+            j++;
+            input = scanner.nextLine();
+        } while (input.equals("") && j < productList.size());
     }
 
     public void remove() {
@@ -123,6 +141,20 @@ public class ProductView {
 
     }
 
+    public void showMaxPrice() {
+        Product product =  productService.findMaxPrice();
+        System.out.println("-----------------------------------------SẢN PHẨM CÓ GIÁ LỚN NHẤT-------------------------------------------");
+        System.out.printf("%-15s %-30s %-25s %-10s  %-20s\n", "Id", "Tên SP", "Giá SP", "Số lượng", "Mô tả");
+        System.out.printf("%-15d %-30s %-25s %-10d %-20s\n",
+                product.getId(),
+                product.getTitle(),
+                AppUtils.doubleToVND(product.getPrice()),
+                product.getQuantity(),
+                product.getDescription()
+        );
+    }
+
+
     private String inputTitle(InputOption option) {
         switch (option) {
             case ADD:
@@ -139,7 +171,8 @@ public class ProductView {
     private String inputDescription() {
         System.out.println("Mô tả sản phẩm");
         System.out.print("⭆ ");
-        return scanner.nextLine();
+        String str = scanner.nextLine();
+        return str;
     }
 
     private int inputId(InputOption option) {

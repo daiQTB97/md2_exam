@@ -149,4 +149,10 @@ public class ProductService implements IProductService {
         return products;
     }
 
+    @Override
+    public Product findMaxPrice(){
+        List<Product> productList = findAllOrderByPriceASC();
+        return productList.get(productList.size() - 1);
+    }
+
 }

@@ -26,5 +26,6 @@ public interface IProductService {
     List<Product> findAllOrderByPriceASC();
 
     List<Product> findAllOrderByPriceDESC();
+    public Product findMaxPrice();
 }
 
